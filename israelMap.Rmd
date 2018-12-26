@@ -1,0 +1,38 @@
+---
+title: "R Markdown and Leaflet"
+author: "Tal Darchi"
+date: "26 בדצמבר 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## A web page created using R Markdown that features a map created with Leaflet showing 6 Israeli cities and their population.
+
+```{r preprocessing}
+library(leaflet)
+library(dplyr)
+
+setwd("c:/Users/tal.darchi/OneDrive - Sapiens/Desktop/")
+israelCities <- subset(read.csv("worldcities.csv"), country == "Israel")
+```
+
+```{r leaflet}
+map <- leaflet() %>%
+  addTiles() %>%
+  addMarkers(lng = israelCities$lng,
+             lat = israelCities$lat,
+             popup =paste(israelCities$city, "<br>Population: ",
+                         formatC(israelCities$population, format = "d", big.mark = ",")
+             )
+  ) %>% 
+  addCircles(lng    = israelCities$lng, 
+             lat    = israelCities$lat, 
+             weight = 1,
+             radius = sqrt(israelCities$population) * 20)
+
+map
+
+```
